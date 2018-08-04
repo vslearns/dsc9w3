@@ -1,0 +1,16 @@
+@font-face {
+    font-family: exo;
+    src: url(Exo2-Light.ttf);
+}
+
+slides > slide {
+  font-family: exo, sans-serif;
+}
+
+slides > slide.backdrop {
+  background: white;
+}
+
+* {
+    border-radius: 0 !important;
+}

@@ -1,0 +1,169 @@
+---
+title: Proving the Central Limit Theorem
+author: Vanshaj S. • Aug. 3, 2018
+output: 
+  ioslides_presentation:
+    widescreen: true
+    css: ios.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=F, message=F, error=F, echo=F)
+```
+
+## Preparations
+```{r, echo = T, results='hide'}
+library(plotly)
+library(manhattanly)
+
+set.seed(81706)
+```
+
+
+## What is the CLT?
+> In probability theory, the central limit theorem (CLT) establishes that, in some situations, when independent random variables are added, their properly normalized sum tends toward a normal distribution (informally a "bell curve") even if the original variables themselves are not normally distributed. The theorem is a key concept in probability theory because it implies that probabilistic and statistical methods that work for normal distributions can be applicable to many problems involving other types of distributions.
+
+Source: Wikipedia
+
+## Sample Sizes
+Another aspect of the Central Limit Theorem is that as you increase the number of samples taken from a non-normal distribution, the distribution of means tends towards normalcy. In this presentation, we're going to explore exactly that.
+
+## ns = 1
+We're going to use a uniform distribution for our model, where n, the sample size, is 100. ns represents the number of samples taken.
+
+```{r}
+x <- runif(100)
+fit <- density(x)
+
+plot_ly(x = x, type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 1
+
+```{r}
+qqnorm(x)
+```
+
+Not linear at all. Let's see how taking multiple samples changes this.
+
+## ns = 10
+Now let's take 10 samples on new uniform distributions and see what shape the means take.
+
+```{r}
+x <- replicate(10, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 10
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+Not a very linear quantile plot; the data isn't **too** normal.
+
+## ns = 30
+Let's ramp up to ns = 30, a number that I had learned in my high school AP Statistics class.
+
+```{r}
+x <- replicate(30, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 30
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+Looks slightly more linear and normal, but I'm not satisfied.
+
+## ns = 50
+Let's go a little higher.
+
+```{r}
+x <- replicate(50, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 50
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+This looks rather linear/normal, actually.
+
+## ns = 100
+Let's double it.
+
+```{r}
+x <- replicate(100, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 100
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+That's a very normal set of data, except for the weird valley in the middle of the histogram.
+
+## ns = 500
+If 100 fetches us good results, 500 should be nearly perfect.
+
+```{r}
+x <- replicate(500, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 500
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+Almost looks like the chart **is** a line.
+
+## ns = 1000
+Finally, let's see if 1000 samples give us a perfect distribution.
+
+```{r}
+x <- replicate(1000, runif(100))
+fit <- density(colMeans(x))
+
+plot_ly(x = colMeans(x), type = "histogram", name = "Data") %>% 
+    add_trace(x = fit$x, y = fit$y, type = "scatter", mode = "lines", fill = "tozeroy", yaxis = "y2", name = "Density") %>%
+    layout(yaxis2 = list(overlaying = "y", side = "right"))
+```
+
+## ns = 1000
+
+```{r}
+qqnorm(colMeans(x))
+```
+
+This is, essentially, as normal as a non-infinite dataset can probably get.
